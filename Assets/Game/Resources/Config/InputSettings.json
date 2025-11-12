@@ -1,0 +1,23 @@
+{
+  "KeyboardMouse": {
+    "AccelerateKey": "W",
+    "DecelerateKey": "S",
+    "ShootBulletKey": "Space",
+    "ShootLaserKey": "LeftShift",
+    "MenuKey": "Escape",
+    "MouseSensitivity": 1.0
+  },
+  "Gamepad": {
+    "AccelerateButton": "RightTrigger",
+    "DecelerateButton": "LeftTrigger",
+    "ShootBulletButton": "A",
+    "ShootLaserButton": "X",
+    "MenuButton": "Start",
+    "StickSensitivity": 1.0,
+    "StickDeadZone": 0.2
+  },
+  "Mobile": {
+    "VirtualStickSensitivity": 1.0,
+    "VirtualStickDeadZone": 0.2
+  }
+}
