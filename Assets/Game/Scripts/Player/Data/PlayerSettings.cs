@@ -6,9 +6,12 @@ using UnityEngine;
 [Serializable]
 public class PlayerSettings
 {
-    public float AccelerationRate = 5f;
-    public float DecelerationRate = 0.95f;
-    public float MaxSpeed = 10f;
-    public float RotationSpeed = 180f;
-    public int InitialLives = 3;
+    public float AccelerationRate;
+    public float DecelerationRate;
+    public float MaxSpeed;
+    public float RotationSpeed;
+    public int InitialLives;
+    public float InvulnerabilityDuration;
+    public float UncontrollableDuration;
+    public LaserSettingsData LaserSettings;
 }

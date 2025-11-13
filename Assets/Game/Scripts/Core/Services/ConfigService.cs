@@ -18,38 +18,30 @@ public class ConfigService : IConfigService
 
         if (textAsset == null)
         {
-            throw new FileNotFoundException($"Config file not found at path: {fullPath}");
+            throw new System.IO.FileNotFoundException($"Config file not found at path: {fullPath}");
         }
 
         return JsonConvert.DeserializeObject<T>(textAsset.text);
     }
 
-    public async UniTask<T> LoadConfigAsync<T>(string configPath) where T : class
+    public async UniTask SaveProgressAsync<T>(string savePath, T progress) where T : class
     {
-        var fullPath = $"{ConfigFolderPath}{configPath}";
-        var resourceRequest = Resources.LoadAsync<TextAsset>(fullPath);
-
-        await resourceRequest.ToUniTask();
-
-        if (resourceRequest.asset == null)
+        await UniTask.RunOnThreadPool(() =>
         {
-            throw new FileNotFoundException($"Config file not found at path: {fullPath}");
-        }
-
-        var textAsset = (TextAsset)resourceRequest.asset;
-        return JsonConvert.DeserializeObject<T>(textAsset.text);
+            var json = JsonConvert.SerializeObject(progress, Formatting.Indented);
+            PlayerPrefs.SetString(savePath, json);
+            PlayerPrefs.Save();
+        });
     }
 
-    public void SaveConfig<T>(string configPath, T config) where T : class
+    public async UniTask<T> LoadProgressAsync<T>(string savePath) where T : class
     {
-        // For Resources, we can't save at runtime. This would need addressables or file system
-        throw new NotImplementedException("Saving to Resources is not supported at runtime. Use SaveConfigAsync with different storage.");
-    }
+        if (!PlayerPrefs.HasKey(savePath)) return null;
 
-    public async UniTask SaveConfigAsync<T>(string configPath, T config) where T : class
-    {
-        // Implementation for saving would go here when we set up proper storage
-        await UniTask.CompletedTask;
-        throw new NotImplementedException("Saving not yet implemented");
+        return await UniTask.RunOnThreadPool(() =>
+        {
+            var json = PlayerPrefs.GetString(savePath);
+            return JsonConvert.DeserializeObject<T>(json);
+        });
     }
 }

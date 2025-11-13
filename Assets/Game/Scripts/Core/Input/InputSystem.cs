@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,7 @@ using Zenject;
 
 public class InputSystem : MonoBehaviour, ITickable
 {
-    private const string InputSettingsPath = "Config/InputSettings";
+    private const string InputSettingsPath = "InputSettings";
 
     private InputDetector _inputDetector;
     private IPlayerControllable _playerController;

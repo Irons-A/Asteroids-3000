@@ -22,7 +22,10 @@ public class ProjectInstaller : MonoInstaller
 
         // Player
         Container.Bind<PlayerModel>().AsSingle();
-        Container.Bind<PlayerController>().AsSingle().NonLazy();
+        Container.Bind<PlayerViewModel>().AsSingle();
+        Container.Bind<LaserModel>().AsSingle();
+        Container.Bind<LaserController>().AsSingle();
+        Container.BindInterfacesAndSelfTo<PlayerController>().AsSingle().NonLazy();
 
         // Load settings from JSON
         BindSettings<InputSettings>("InputSettings");
@@ -32,7 +35,8 @@ public class ProjectInstaller : MonoInstaller
     private void BindSettings<T>(string configName) where T : class
     {
         Container.Bind<T>()
-            .FromMethod(context => context.Container.Resolve<IConfigService>().LoadConfig<T>(configName))
+            .FromMethod(context =>
+                context.Container.Resolve<IConfigService>().LoadConfig<T>(configName))
             .AsSingle();
     }
 }

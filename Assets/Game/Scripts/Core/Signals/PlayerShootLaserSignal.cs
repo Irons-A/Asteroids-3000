@@ -6,9 +6,12 @@ public class PlayerShootLaserSignal
 {
     public Vector2 Position { get; }
     public float Rotation { get; }
-    public PlayerShootLaserSignal(Vector2 position, float rotation)
+    public float Duration { get; }
+
+    public PlayerShootLaserSignal(Vector2 position, float rotation, float duration)
     {
         Position = position;
         Rotation = rotation;
+        Duration = duration;
     }
 }

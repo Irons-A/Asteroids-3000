@@ -13,7 +13,6 @@ public class PlayerModel
     public bool IsInvulnerable { get; set; }
     public bool IsControllable { get; set; }
 
-    // Stats for game logic
     public float InvulnerabilityDuration { get; set; }
     public float UncontrollableDuration { get; set; }
 }

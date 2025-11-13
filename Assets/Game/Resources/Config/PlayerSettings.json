@@ -1,7 +1,15 @@
 {
   "AccelerationRate": 8.0,
-  "DecelerationRate": 0.92,
+  "DecelerationRate": 5.0,
   "MaxSpeed": 12.0,
   "RotationSpeed": 180.0,
-  "InitialLives": 3
+  "InitialLives": 3,
+  "InvulnerabilityDuration": 3.0,
+  "UncontrollableDuration": 2.0,
+  "LaserSettings": {
+    "MaxCharges": 3,
+    "ChargeCooldown": 5.0,
+    "ShotCooldown": 0.5,
+    "LaserDuration": 0.25
+  }
 }
