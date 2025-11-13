@@ -1,12 +1,16 @@
+using Scripts.Core.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class InputSettings
+namespace Scripts.Core.Data
 {
-    public KeyboardMouseSettings KeyboardMouse;
-    public GamepadSettings Gamepad;
-    public MobileSettings Mobile;
+    [Serializable]
+    public class InputSettings
+    {
+        public KeyboardMouseSettings KeyboardMouse;
+        public GamepadSettings Gamepad;
+        public MobileSettings Mobile;
+    }
 }

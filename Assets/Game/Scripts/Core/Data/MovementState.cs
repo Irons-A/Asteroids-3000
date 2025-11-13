@@ -1,6 +1,9 @@
-public enum MovementState
+namespace Scripts.Core.Data
 {
-    None,
-    Accelerating,
-    Decelerating
+    public enum MovementState
+    {
+        None,
+        Accelerating,
+        Decelerating
+    }
 }

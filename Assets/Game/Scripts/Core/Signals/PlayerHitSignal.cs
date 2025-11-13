@@ -2,4 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHitSignal { }
+namespace Scripts.Core.Signals
+{
+    public class PlayerHitSignal { }
+}

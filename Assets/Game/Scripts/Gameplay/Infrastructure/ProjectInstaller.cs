@@ -1,42 +1,53 @@
+using Scripts.Core.Data;
+using Scripts.Core.Interfaces;
+using Scripts.Core.PlayerInput;
+using Scripts.Core.PlayerInput.Strategies;
+using Scripts.Core.Services;
+using Scripts.Core.Sevices;
+using Scripts.Player.Data;
+using Scripts.Player.Logic;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class ProjectInstaller : MonoInstaller
+namespace Scripts.Gameplay.Infrastructure
 {
-    public override void InstallBindings()
+    public class ProjectInstaller : MonoInstaller
     {
-        // Signal Bus
-        SignalBusInstaller.Install(Container);
+        public override void InstallBindings()
+        {
+            // Signal Bus
+            SignalBusInstaller.Install(Container);
 
-        // Config Service
-        Container.BindInterfacesTo<ConfigService>().AsSingle();
+            // Config Service
+            Container.BindInterfacesTo<ConfigService>().AsSingle();
 
-        // Input System
-        Container.Bind<InputDetector>().AsSingle();
-        Container.Bind<IInputStrategy>().To<KeyboardMouseInputStrategy>().AsSingle();
-        Container.Bind<IInputStrategy>().To<GamepadInputStrategy>().AsSingle();
-        Container.Bind<IInputStrategy>().To<MobileInputStrategy>().AsSingle();
-        Container.BindInterfacesAndSelfTo<InputSystem>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+            // Input System
+            Container.Bind<InputDetector>().AsSingle();
+            Container.Bind<IInputStrategy>().To<KeyboardMouseInputStrategy>().AsSingle();
+            Container.Bind<IInputStrategy>().To<GamepadInputStrategy>().AsSingle();
+            Container.Bind<IInputStrategy>().To<MobileInputStrategy>().AsSingle();
+            Container.BindInterfacesAndSelfTo<InputSystem>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
 
-        // Player
-        Container.Bind<PlayerModel>().AsSingle();
-        Container.Bind<PlayerViewModel>().AsSingle();
-        Container.Bind<LaserModel>().AsSingle();
-        Container.Bind<LaserController>().AsSingle();
-        Container.BindInterfacesAndSelfTo<PlayerController>().AsSingle().NonLazy();
+            // Player
+            Container.Bind<PlayerModel>().AsSingle();
+            Container.Bind<PlayerViewModel>().AsSingle();
+            Container.Bind<LaserModel>().AsSingle();
+            Container.Bind<LaserController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PlayerController>().AsSingle().NonLazy();
 
-        // Load settings from JSON
-        BindSettings<InputSettings>("InputSettings");
-        BindSettings<PlayerSettings>("PlayerSettings");
-    }
+            // Load settings from JSON
+            BindSettings<InputSettings>("InputSettings");
+            BindSettings<PlayerSettings>("PlayerSettings");
+        }
 
-    private void BindSettings<T>(string configName) where T : class
-    {
-        Container.Bind<T>()
-            .FromMethod(context =>
-                context.Container.Resolve<IConfigService>().LoadConfig<T>(configName))
-            .AsSingle();
+        private void BindSettings<T>(string configName) where T : class
+        {
+            Container.Bind<T>()
+                .FromMethod(context =>
+                    context.Container.Resolve<IConfigService>().LoadConfig<T>(configName))
+                .AsSingle();
+        }
     }
 }

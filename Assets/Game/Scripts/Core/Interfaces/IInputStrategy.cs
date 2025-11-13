@@ -1,12 +1,16 @@
+using Scripts.Core.Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IInputStrategy
+namespace Scripts.Core.Interfaces
 {
-    void Initialize(InputSettings config);
-    PlayerInputData GetInput();
-    bool IsDevicePresent();
-    void Enable();
-    void Disable();
+    public interface IInputStrategy
+    {
+        void Initialize(InputSettings config);
+        PlayerInputData GetInput();
+        bool IsDevicePresent();
+        void Enable();
+        void Disable();
+    }
 }

@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public interface IConfigService
+namespace Scripts.Core.Sevices
 {
-    T LoadConfig<T>(string configPath) where T : class;
-    UniTask SaveProgressAsync<T>(string savePath, T progress) where T : class;
-    UniTask<T> LoadProgressAsync<T>(string savePath) where T : class;
+    public interface IConfigService
+    {
+        T LoadConfig<T>(string configPath) where T : class;
+        UniTask SaveProgressAsync<T>(string savePath, T progress) where T : class;
+        UniTask<T> LoadProgressAsync<T>(string savePath) where T : class;
+    }
 }

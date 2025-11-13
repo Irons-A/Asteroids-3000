@@ -3,11 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class LaserSettingsData
+namespace Scripts.Player.Data
 {
-    public int MaxCharges;
-    public float ChargeCooldown;
-    public float ShotCooldown;
-    public float LaserDuration;
+    [Serializable]
+    public class LaserSettingsData
+    {
+        public int MaxCharges;
+        public float ChargeCooldown;
+        public float ShotCooldown;
+        public float LaserDuration;
+    }
 }
