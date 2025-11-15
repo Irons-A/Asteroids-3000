@@ -1,0 +1,10 @@
+{
+  "SceneSize": {
+    "x": 20.0,
+    "y": 20.0
+  },
+  "MaxEnemies": 10,
+  "UFOSpawnProbability": 0.3,
+  "EnemySpawnRate": 2.0,
+  "ScreenWrapMargin": 1.0
+}

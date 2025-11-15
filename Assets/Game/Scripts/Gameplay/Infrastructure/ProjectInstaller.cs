@@ -1,5 +1,7 @@
 using Scripts.Core.Data;
+using Scripts.Core.Environment;
 using Scripts.Core.Interfaces;
+using Scripts.Core.Physics;
 using Scripts.Core.PlayerInput;
 using Scripts.Core.PlayerInput.Strategies;
 using Scripts.Core.Services;
@@ -23,6 +25,14 @@ namespace Scripts.Gameplay.Infrastructure
             // Config Service
             Container.BindInterfacesTo<ConfigService>().AsSingle();
 
+            // Environment Systems
+            Container.BindInterfacesAndSelfTo<EnvironmentSystem>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ScreenWrapSystem>().AsSingle();
+
+            // Physics Systems
+            Container.BindInterfacesAndSelfTo<MovementSystem>().AsSingle();
+            Container.BindInterfacesAndSelfTo<CollisionSystem>().AsSingle();
+
             // Input System
             Container.Bind<InputDetector>().AsSingle();
             Container.Bind<IInputStrategy>().To<KeyboardMouseInputStrategy>().AsSingle();
@@ -40,6 +50,8 @@ namespace Scripts.Gameplay.Infrastructure
             // Load settings from JSON
             BindSettings<InputSettings>("InputSettings");
             BindSettings<PlayerSettings>("PlayerSettings");
+            BindSettings<PhysicsConfig>("PhysicsConfig");
+            BindSettings<EnvironmentConfig>("EnvironmentConfig");
         }
 
         private void BindSettings<T>(string configName) where T : class

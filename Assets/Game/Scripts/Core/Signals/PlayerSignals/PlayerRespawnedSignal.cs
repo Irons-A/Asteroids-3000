@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Scripts.Core.Signals
+namespace Scripts.Core.Signals.PlayerSignals
 {
-    public class PlayerDiedSignal { }
+    public class PlayerRespawnedSignal { }
 }

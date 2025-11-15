@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
+using Scripts.Core.Environment;
 using Scripts.Core.Interfaces;
-using Scripts.Core.Signals;
+using Scripts.Core.Physics;
+using Scripts.Core.Signals.PlayerSignals;
 using Scripts.Player.Data;
 using System;
 using System.Collections;
@@ -18,13 +20,16 @@ namespace Scripts.Player.Logic
         private readonly PlayerViewModel _playerViewModel;
         private readonly LaserController _laserController;
         private readonly LaserModel _laserModel;
+        private readonly MovementSystem _movementSystem;
+        private readonly ScreenWrapSystem _screenWrapSystem;
 
         private bool _isInvulnerabilityActive = false;
         private bool _isUncontrollableActive = false;
 
         public PlayerController(SignalBus signalBus, PlayerModel playerModel,
                               PlayerSettings playerSettings, PlayerViewModel playerViewModel,
-                              LaserController laserController, LaserModel laserModel)
+                              LaserController laserController, LaserModel laserModel,
+                              MovementSystem movementSystem, ScreenWrapSystem screenWrapSystem)
         {
             _signalBus = signalBus;
             _playerModel = playerModel;
@@ -32,17 +37,26 @@ namespace Scripts.Player.Logic
             _playerViewModel = playerViewModel;
             _laserController = laserController;
             _laserModel = laserModel;
+            _movementSystem = movementSystem;
+            _screenWrapSystem = screenWrapSystem;
         }
 
         public void Initialize()
         {
             ResetPlayerState();
+
+            _movementSystem.RegisterMovable(_playerModel);
+            _screenWrapSystem.RegisterForWrapping(_playerModel);
+
             _signalBus.Subscribe<PlayerHitSignal>(OnPlayerHit);
         }
 
         public void Dispose()
         {
             _signalBus.Unsubscribe<PlayerHitSignal>(OnPlayerHit);
+
+            _movementSystem.UnregisterMovable(_playerModel);
+            _screenWrapSystem.UnregisterFromWrapping(_playerModel);
         }
 
         public void Tick()
@@ -64,7 +78,6 @@ namespace Scripts.Player.Logic
             }
 
             var normalizedAngle = NormalizeAngle(_playerModel.Rotation);
-
             _playerViewModel.RotationAngle.Value = normalizedAngle;
             _playerViewModel.RotationProgress.Value = normalizedAngle / 360f;
             _playerViewModel.Speed.Value = _playerModel.Velocity.magnitude;
@@ -78,22 +91,6 @@ namespace Scripts.Player.Logic
             return angle;
         }
 
-        private void ResetPlayerState()
-        {
-            _playerModel.Position = Vector2.zero;
-            _playerModel.Rotation = 0f;
-            _playerModel.Velocity = Vector2.zero;
-            _playerModel.IsAlive = true;
-            _playerModel.IsControllable = true;
-            _playerModel.IsInvulnerable = false;
-            _playerModel.Lives = _playerSettings.InitialLives;
-            _playerModel.Score = 0;
-
-            _playerViewModel.Lives.Value = _playerModel.Lives;
-            _playerViewModel.Score.Value = _playerModel.Score;
-            _playerViewModel.IsInvulnerable.Value = false;
-        }
-
         public void Accelerate()
         {
             if (!CanControl()) return;
@@ -103,7 +100,7 @@ namespace Scripts.Player.Logic
                 Mathf.Cos(_playerModel.Rotation * Mathf.Deg2Rad)
             );
 
-            _playerModel.Velocity += accelerationDirection * _playerSettings.AccelerationRate;
+            _playerModel.Velocity += accelerationDirection * _playerSettings.AccelerationRate * Time.deltaTime;
 
             if (_playerModel.Velocity.magnitude > _playerSettings.MaxSpeed)
             {
@@ -118,7 +115,7 @@ namespace Scripts.Player.Logic
             if (!CanControl()) return;
 
             var decelerationDirection = -_playerModel.Velocity.normalized;
-            _playerModel.Velocity += decelerationDirection * _playerSettings.AccelerationRate;
+            _playerModel.Velocity += decelerationDirection * _playerSettings.AccelerationRate * Time.deltaTime;
 
             if (Vector2.Dot(_playerModel.Velocity, decelerationDirection) > 0)
             {
@@ -140,7 +137,6 @@ namespace Scripts.Player.Logic
             if (rotationDirection != Vector2.zero)
             {
                 var targetAngle = Mathf.Atan2(rotationDirection.x, rotationDirection.y) * Mathf.Rad2Deg;
-
                 _playerModel.Rotation = targetAngle;
 
                 _signalBus.Fire(new PlayerRotatingSignal(targetAngle));
@@ -222,22 +218,27 @@ namespace Scripts.Player.Logic
             }
         }
 
-        public void UpdatePosition(float deltaTime)
-        {
-            if (!_playerModel.IsAlive) return;
-
-            _playerModel.Position += _playerModel.Velocity * deltaTime;
-        }
-
         public void ResetToCenter()
         {
             _playerModel.Position = Vector2.zero;
             _playerModel.Velocity = Vector2.zero;
+            _playerModel.Rotation = 0f;
             _isInvulnerabilityActive = false;
             _isUncontrollableActive = false;
             _playerModel.IsInvulnerable = false;
             _playerModel.IsControllable = true;
             _playerViewModel.IsInvulnerable.Value = false;
+        }
+
+        private void ResetPlayerState()
+        {
+            ResetToCenter();
+            _playerModel.IsAlive = true;
+            _playerModel.Lives = _playerSettings.InitialLives;
+            _playerModel.Score = 0;
+
+            _playerViewModel.Lives.Value = _playerModel.Lives;
+            _playerViewModel.Score.Value = _playerModel.Score;
         }
     }
 }

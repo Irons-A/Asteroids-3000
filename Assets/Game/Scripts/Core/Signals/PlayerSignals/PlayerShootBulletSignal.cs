@@ -2,19 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Scripts.Core.Signals
+namespace Scripts.Core.Signals.PlayerSignals
 {
-    public class PlayerShootLaserSignal
+    public class PlayerShootBulletSignal
     {
         public Vector2 Position { get; }
         public float Rotation { get; }
-        public float Duration { get; }
-
-        public PlayerShootLaserSignal(Vector2 position, float rotation, float duration)
+        public PlayerShootBulletSignal(Vector2 position, float rotation)
         {
             Position = position;
             Rotation = rotation;
-            Duration = duration;
         }
     }
 }
